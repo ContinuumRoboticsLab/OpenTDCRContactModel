@@ -1,0 +1,7 @@
+.idea/
+cmake-build-debug/
+cmake-build-release/
+static_model/eigen
+static_model/gsl-2.7.1
+static_model/build
+nlopt
