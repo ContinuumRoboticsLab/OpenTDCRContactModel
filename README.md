@@ -1,5 +1,7 @@
 # OpenTDCRContactModel
 
+## Intro
+# TODO 
 
 ## Install
 Clone the repo
@@ -12,6 +14,7 @@ Make sure matlab is installed prior to this step and that you have checked the "
 Create a conda enviroment. This must be done with sudo as some of the python files
 require it.
 ``` 
+mkdir envs
 sudo $(which conda) env create -f environment.yml --prefix ./envs
 ```
 Activate enviroment
@@ -28,7 +31,7 @@ sudo apt update
 sudo apt install cmake libopenblas-dev build-essential libnlopt-dev
 ```
 
-nlopt must be built from source
+nlopt must be built from source. Might have to run this code block twice if you encounter an error.
 ```
 git clone https://github.com/stevengj/nlopt.git
 cd nlopt
@@ -50,4 +53,20 @@ cmake -DCMAKE_BUILD_TYPE=Release -G 'CodeBlocks - Unix Makefiles' -B ./cmake-bui
 cd cmake-build-release
 make pcca_solver
 cd ../../../
+```
+
+## Usage
+
+1. Import the built shared object (from parent of cpp folder):
+```python
+import importlib
+pcca_solver_module = importlib.import_module("cpp.cmake-build-release.pcca_solver")
+```
+2. Instantiate the solver:
+```
+cpp_solver = pcca_solver_module.pcca_solver()
+```
+2. Use the solver with numpy objects:
+```python
+xSol,exitflag = cpp_solver.solve(...)
 ```
