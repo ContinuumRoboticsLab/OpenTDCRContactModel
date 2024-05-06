@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
-import matlab.engine
+#import matlab.engine
 
 
 class Robot:
@@ -54,11 +54,16 @@ def transMatrix(var,lInter,q,p):
 
     
 def matlab_convertor(x):
+   # import pdb; pdb.set_trace()
+    
     if (isinstance(x, float)):
         return float(x)
-    if isinstance(x, list):
-        return matlab.double(x)
-    return matlab.double(x.tolist())
+    
+   # if isinstance(x, list):
+        #return matlab.double(x)
+        
+    return np.array(x, dtype=np.double)
+    #return x.astype(np.double)
 
 def positionCalc(lInter,nd,var,pTendon):
     """
