@@ -4,7 +4,7 @@ from utils import mod_cr
 from utils_model import model_definition as md
     
 class Node:
-    def __init__(self, robot : mod_cr.Robot, l, actuation, model_type):
+    def __init__(self, robot : mod_cr.Robot, l, actuation):
         """
         A node is used to represent the state of the TDCR at a given configuration.  
 
@@ -75,7 +75,22 @@ class Node:
         mod_cr.plotSettings()
     
     def run_forward_model(self, taskspace, bool_reduced, model_type):
-        #bool_reduced is a boolean that determines if the obstacles considered by the model are limited to ones that are close to the robot body
+        """
+        Runs the forward model of the node.
+
+        Parameters:
+        taskspace (Taskspace): An object of the class Taskspace, containing information on the obstacles
+        bool_reduced (bool): If True, the model is run in a reduced configuration space (containing only obstacles closer to the initial guess). used for ocmputational speedup
+        model_type (str): The type of the model to run. Should be a key in self.model_dict. Choose from [KINEMATIC_CPP or KINEMATIC_MATLAB]
+
+        Returns:
+        bool: True if the model ran successfully, False otherwise.
+
+        Raises:
+        RuntimeError: If the absolute difference between 
+        self.l_tendon_calculated[0] and self.l_tendon is greater than 1e-4, a RuntimeError is raised.
+
+        """
         if bool_reduced:
             w_reduced = self.set_config_bound(taskspace, self.x_init_python)
         else:
@@ -87,7 +102,7 @@ class Node:
         # extiflag returns True for a successful convergence of the solver
         if exitflag <=0 :
             return False
-        self.model_dict[model_type].set_var(self, np.array(np.array(xSol)[0]))
+        self.model_dict[model_type].set_var(self, np.array(np.array(xSol)[0])) #sets the curvatures of the model to the desired values
         if (abs(self.l_tendon_calculated[0] - self.l_tendon) > 1e-4) :
             print(self.l_tendon_calculated, self.l_tendon, exitflag)
             raise RuntimeError("Solver doesnt satisfy tolerance of calculated tendon length being equal to desired actuated length")

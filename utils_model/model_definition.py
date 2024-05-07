@@ -7,9 +7,18 @@ eng = matlab.engine.start_matlab()
 eng.addpath('./utils_model')
 cpp_solver_module = importlib.import_module("utils_model.cpp.cmake-build-release.pcca_solver")
 
+
 class Model:
     @abstractmethod
     def set_var(self, node, x):
+        """
+        Virtual method that is overridden in subclasses to set the curvature parameters, 
+        coordinates, and end effector values of the node.
+
+        Parameters:
+        node (Node): The node for which the parameters are to be set
+        x (array): The new values for the solved curvature parameters
+        """
         pass
 
     @abstractmethod
