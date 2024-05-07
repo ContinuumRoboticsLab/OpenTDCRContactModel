@@ -3,11 +3,12 @@
 This is an open-source implementation of a 2D kinematic model of a single segment TDCR. 
 
 
-Current model implementations are based on Ashwin et al.'s work [1]. 
+Current model implementations are based on Ashwin et al.'s work^[1]. 
 
-Additional details on the backbone representation and optimisation setup can be found in [2]. The model available in this repo has been used to simulate the robot interacting with the environment, and consequently generate motion plans for contact-aided navigation.
+Additional details on the backbone representation and optimisation setup can be found in^[2]. The model available in this repo has been used to simulate the robot interacting with the environment, and consequently generate motion plans for contact-aided navigation.
 
 [1] K.P. Ashwin, Soumya Kanti Mahapatra, Ashitava Ghosal, Profile and contact force estimation of cable-driven continuum robots in presence of obstacles, _Mechanism and Machine Theory_, Volume 164, 2021
+
 [2] P. Rao, O. Salzman and J. Burgner-Kahrs, "Towards Contact-Aided Motion Planning for Tendon-Driven Continuum Robots," in IEEE Robotics and Automation Letters, vol. 9, no. 5, pp. 4687-4694, May 2024.
 
 ### Taskspace generation
