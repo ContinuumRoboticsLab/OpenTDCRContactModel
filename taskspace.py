@@ -64,6 +64,20 @@ class TaskSpaceSuperEllipse(TaskSpace):
         
 
     def set_obstacles(self, ellipse : SuperEllipse, num_copies, delta):
+        """
+        Sets up obstacles in the task space.
+
+        This function creates multiple copies of a given SuperEllipse object and adds them to the task space as obstacles.
+        The position of each copy is offset in the z-direction by a multiple of the given delta.
+
+        Parameters:
+        ellipse (SuperEllipse): The SuperEllipse object to be copied and added as an obstacle.
+        num_copies (int): The number of copies of the SuperEllipse object to be created and added.
+        delta (float): The distance in the z-direction between each copy of the SuperEllipse object.
+
+        Returns:
+        None
+        """
         for i in range(num_copies):
             self.obstacle += [SuperEllipse(ellipse.ab, add_list(ellipse.p,[0,0,i*delta]))]
             self.ob_center += [self.obstacle[-1].p]
