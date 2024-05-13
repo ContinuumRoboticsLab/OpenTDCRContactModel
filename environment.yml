@@ -1,0 +1,20 @@
+name: OPENCR
+channels:
+  - default
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+  # - matlabengine
+    - numpy
+    - dill
+    - matplotlib
+    - pybind11
+    - celluloid
+    - pandas
+  - xtl
+  - xtensor
+  - xtensor-blas
+  - xtensor-python
+  - xsimd

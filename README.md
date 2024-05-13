@@ -38,9 +38,57 @@ The forward model can be called by `node.run_forward_model(taskspace, bool_flag,
 ### Running a sample trajectory
 Some sample paths are provided in `/sample_paths`. Each .csv file contains a list of `mx2` values, with each row containing [l_segment, l_tendon] that the robot is actuated with. By setting the initial guess of the model to be the previous rows solution, the resulting robot shape for each row can be simulated and plotted. There is added functionality to generate the resulting motion in an .mp4 file. 
 
-### Installation instructions
+## Installation instructions
 
-...
+First clone this repo
+```
+git clone https://github.com/ContinuumRoboticsLab/OpenTDCRContactModel.git
+cd OpenTDCRContactModel
+```
+Create a conda enviroment. This must be done with sudo as some of the python files
+require it.
+``` 
+sudo $(which conda) env create -f environment.yml --prefix ./envs
+```
+Activate enviroment
+```
+conda activate ./envs
+```
+If you would like to use MATLAB instead of our CPP optimizers, please run ```pip install matlabengine``` make sure MATLAB is installed on your system first.
+
+
+#### Install system packages
+```
+sudo apt update
+```
+```
+sudo apt install cmake libopenblas-dev build-essential libnlopt-dev
+```
+
+nlopt must be built from source
+```
+git clone https://github.com/stevengj/nlopt.git
+cd nlopt
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+
+cd ../../
+sudo rm -rf nlopt
+```
+
+#### Build the pcca_solver file
+```
+cd utils_model/cpp
+mkdir cmake-build-release
+cmake -DCMAKE_BUILD_TYPE=Release -G 'CodeBlocks - Unix Makefiles' -B ./cmake-build-release
+cd cmake-build-release
+make pcca_solver
+cd ../../../
+```
+
 
 
 ### More Information : 

@@ -2,11 +2,12 @@ import numpy as np
 import importlib
 from utils import mod_cr
 from abc import abstractmethod
-import matlab.engine
-eng = matlab.engine.start_matlab()
-eng.addpath('./utils_model')
-cpp_solver_module = importlib.import_module("utils_model.cpp.cmake-build-release.pcca_solver")
 
+# import matlab.engine
+# eng = matlab.engine.start_matlab()
+# eng.addpath('./utils_model')
+
+cpp_solver_module = importlib.import_module("utils_model.cpp.cmake-build-release.pcca_solver")
 
 class Model:
     @abstractmethod
@@ -30,6 +31,7 @@ class KinematicMatlabModel(Model):
     def run_model(self, node, workspace):
         workspace.matlab_conversion()
 
+        # Will throw an error, eng not defined without matlab
         xSol,lamb,exitflag = eng.pccaSolver(node.x_init,float(node.l/node.nd), float(node.nd),\
                                                 float(node.radius),float(node.l_tendon),mod_cr.matlab_convertor(node.tendon)\
                                                     ,workspace.ob_centerM,workspace.abM,nargout=3)
