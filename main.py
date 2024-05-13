@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 
 def main():
     w_name = 'workspace_3'
+    w_name = 'workspace_3CPP'
     print(w_name)
     workspace = helpers.load_object(w_name)
     
@@ -17,9 +18,10 @@ def main():
     config_init.set_init_guess(np.array([1]*robot1.nd))
     config_init.T = np.eye(4)
 
-    counter = config_init.run_forward_model(workspace, True, "KINEMATIC_MATLAB")
+    counter = config_init.run_forward_model(workspace, True, "KINEMATIC_CPP")
     config_init.plot_configuration(workspace)
     plt.savefig('initial_config.png')
+    plt.show()
 
     # traced_path = helpers.load_object('sample_paths/1traced_path')
     # print(traced_path)
