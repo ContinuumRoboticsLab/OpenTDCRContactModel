@@ -3,12 +3,6 @@ project(contact_model_cpp)
 #
 set(CMAKE_CXX_STANDARD 20)
 
-# for GTest
-find_package(GTest CONFIG OPTIONAL_COMPONENTS)
-
-# for google benchmark
-find_package(benchmark OPTIONAL_COMPONENTS)
-
 # for xtensor
 add_definitions(-DHAVE_CBLAS=1)
 find_package(xtl REQUIRED)
@@ -42,22 +36,6 @@ add_library(contact_model_cpp SHARED pcca.cpp pcca.h
         pcca_solver_nlopt.h)
 
 target_link_libraries(contact_model_cpp nlopt ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES} xtensor xtensor::optimize xtensor::use_xsimd xtensor-blas)
-
-add_executable(contact_model_cpp_main main.cpp)
-target_link_libraries(contact_model_cpp_main contact_model_cpp)
-
-if(GTest_FOUND)
-    add_executable(pcca_tests pcca_tests.cpp)
-    target_link_libraries(pcca_tests contact_model_cpp GTest::gtest_main)
-
-    include(GoogleTest)
-    gtest_discover_tests(pcca_tests)
-endif()
-
-if(benchmark_FOUND)
-    add_executable(pcca_benchmarks pcca_bench.cpp)
-    target_link_libraries(pcca_benchmarks contact_model_cpp benchmark::benchmark_main)
-endif()
 
 pybind11_add_module(pcca_solver pcca_solver_pybind.cpp pcca_solver_pytensor.cpp pcca_solver_pytensor.h)
 target_link_libraries(pcca_solver PRIVATE contact_model_cpp pybind11::module xtensor-python Python::NumPy)
