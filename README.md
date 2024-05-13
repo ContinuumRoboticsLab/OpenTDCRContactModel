@@ -1,4 +1,8 @@
 # OpenTDCRContactModel
+![alt text](https://crl.utm.utoronto.ca/assets/images/CRLab%20logo_dark_1_large.png)
+
+Learn more about CRL: https://crl.utm.utoronto.ca/
+
 
 This is an open-source implementation of a 2D kinematic model of a single segment TDCR. 
 
@@ -11,7 +15,11 @@ Additional details on the backbone representation and optimisation setup can be 
 
 [2] P. Rao, O. Salzman and J. Burgner-Kahrs, "Towards Contact-Aided Motion Planning for Tendon-Driven Continuum Robots," in IEEE Robotics and Automation Letters, vol. 9, no. 5, pp. 4687-4694, May 2024.
 
-### Taskspace generation
+## Collab Demo
+We have created an interactive Google Collab demo to play with some of the features before installing it on your system. It can be accessed at this link
+https://colab.research.google.com/drive/12blCye60rOwlRdw1ya80a9P254LK0z9w?usp=sharing
+
+## Taskspace generation
 The 2D plane in which the robot operates is the xz plane. 
 The current implementation supports circular obstacles. Non-convex and more complex obstacles can be created by superimposing multiple circular obstacles. 
 
