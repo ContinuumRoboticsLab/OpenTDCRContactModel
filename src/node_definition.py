@@ -15,6 +15,11 @@ class Node:
         model_type (str): The type of kinematic model used for the robot - either KINEMATIC_CPP or KINEMATIC_MATLAB
         var (numpy array): An array of size 3n, n = number of disks, stores the curvature of each subsegment
         """
+        if l <= 0: raise Exception("Actuation space length must be greater than 0")
+        if actuation <=0: raise Exception("Actuation space Tendon length must be greater than 0")
+        
+
+
         self.__dict__.update(robot.__dict__)
         self.var = np.zeros((1,3*self.nd))
         self.l = round(l, 4)
@@ -23,6 +28,9 @@ class Node:
                         "KINEMATIC_CPP":md.KinematicCppModel()}
         self.exitflag = False
         
+        if model_type not in self.model_dict.keys(): raise Exception("Model type invalid")
+
+
 
     def set_init_guess(self, x_init):
         # Sets the initial guess for th e robot's configuration

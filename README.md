@@ -18,6 +18,7 @@ Activate enviroment
 ```
 conda activate ./envs
 ```
+If you would like to use MATLAB instead of our CPP optimizers, please run ```pip install matlabengine``` make sure MATLAB is installed on your system first.
 
 
 ## Install system packages

@@ -9,6 +9,13 @@ class Robot:
     Struct to store the robot parameters
     """
     def __init__(self, radius, nd, E = 60e9, ro = 1e-3):
+        if radius < 6e-10: raise Exception(f"Radius must be greater than: 6e-10, your radius is :{radius}")
+        if nd <= 0: raise Exception(f"Must be atleast 1 disk, your nd is: {nd}")
+        if E >= 60e30: raise Exception(f"Youngs modulus must be smaller than: 60e30")
+        if ro <= 1e-20: raise Exception(f"Outer radius must be greater than 1e-20")
+
+
+
         self.radius = radius #radius of disk
         self.tendon = np.array([[self.radius,0,0,1],[-self.radius,0,0,1]]).transpose() #4x2 array of tendon positions in the disk
         self.nd = nd # number of disks
