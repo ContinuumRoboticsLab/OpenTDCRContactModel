@@ -54,7 +54,7 @@ def visualizing(traced_path, workspace, filename, show_video=False):
    
     clogo = cv2.imread("media/crlLogo.png")
     ulogo = cv2.imread("media/uoftLogo.png")   
-    print("Writing video file")
+    print("Writing video")
     while True:
         ret, frame = cap.read()
         if ret:
