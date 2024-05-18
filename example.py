@@ -23,17 +23,7 @@ def main():
     w_name = 'workspaces/workspace_3CPP'
     print("Workspace name: ",w_name)
     
-    
-    task = TaskSpaceSuperEllipse()
-    obstacle_1 = SuperEllipse((0.002, 0.0102, 4), (0.16, 0.0, 0.03))
-    obstacle_2 = SuperEllipse((0.01, 0.0432, 2), (0.06, 0.0, 0.03))
-    obstacle_3 = SuperEllipse((0.01, 0.0132, 2), (0.0, 0.0, 0.03))
-    task.set_obstacles(obstacle_1, 1, 1)
-    task.set_obstacles(obstacle_2, 1, 1)
-    task.set_obstacles(obstacle_3, 1, 1)
-    
     workspace = helpers.load_object(w_name)
-    workspace = task
 
     robot1 = mod_cr.Robot(6e-3, 30) #setting dimensions of the robot
 
@@ -45,11 +35,10 @@ def main():
     counter = config_init.run_forward_model(workspace, True, "KINEMATIC_CPP")
     config_init.plot_configuration(workspace)
     
-    plt.show()
-    sys.exit(0)
+    #plt.show()
+
     helpers.saveFigure()
     
-    #plt.show()
  
     #generating motion plan based on a provided sample path
     
