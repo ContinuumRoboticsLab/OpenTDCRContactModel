@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from obstacle_definition import SuperEllipse
+from utils.obstacle_definition import SuperEllipse
 from utils import mod_cr
 
 def add_list(list1,list2):
