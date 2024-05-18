@@ -65,7 +65,7 @@ def visualizing(traced_path, workspace, filename, show_video=False):
         else:
             break
 
-    os.remove("media/sample.mp4")
+    #os.remove("media/sample.mp4")
 
 
 
