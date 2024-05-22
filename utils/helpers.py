@@ -4,7 +4,9 @@ from pylab import text
 from celluloid import Camera
 import dill
 import matplotlib.pyplot as plt
-import cv2, os
+import os
+from PIL import Image 
+from moviepy.editor import VideoFileClip, ImageClip, CompositeVideoClip
 
 def save_object(ob, filename):
     dill.dump(ob, file = open(filename+".pickle", "wb"))
@@ -44,39 +46,22 @@ def visualizing(traced_path, workspace, filename, show_video=False):
         plt.show()
     animation = camera.animate()
     animation.save(filename + '.mp4', writer='ffmpeg', fps = 15)
-    # #animation.save(filename + '.gif', writer='Pillow', fps=25)
+    #animation.save(filename + '.gif', writer='Pillow', fps=25)
     
     
-    cap = cv2.VideoCapture(filename + '.mp4')
    
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter("media/path.mp4", fourcc, 20,(int(size[0]),int(size[1])))
-   
-    clogo = cv2.imread("media/crlLogo.png")
-    ulogo = cv2.imread("media/uoftLogo.png")   
-    print("Writing video")
-    while True:
-        ret, frame = cap.read()
-        if ret:
-            frame[0: clogo.shape[0], 0: clogo.shape[1]] = clogo
-            frame[0: ulogo.shape[0], 860: 860+ulogo.shape[1]] = ulogo
-            out.write(frame)
-            # cv2.imshow('frame', frame)
-        else:
-            break
-
-    #os.remove("media/sample.mp4")
-
-
+    
+    video = VideoFileClip(filename + '.mp4')
+    logo =ImageClip("media/logo.png").set_duration(video.duration)
+    logo = logo.set_pos(("left", "top"))
+    video_with_watermark = CompositeVideoClip([video, logo])
+    video_with_watermark.write_videofile("media/pathing.mp4", codec="libx264")
+    os.remove(filename + '.mp4')
 
 def saveFigure():
+
     plt.savefig('media/initial_config.png')
-    im = cv2.imread('media/initial_config.png')
-    
-    clogo = cv2.imread("media/crlLogo.png")
-    clogo = cv2.resize(clogo, (0, 0), fx = 0.8, fy = 0.8)
-    ulogo = cv2.imread("media/uoftLogo.png") 
-    ulogo = cv2.resize(ulogo, (0, 0), fx = 0.8, fy = 0.8)
-    im[0: clogo.shape[0], 0: clogo.shape[1]] = clogo
-    im[0: ulogo.shape[0], im.shape[1]-ulogo.shape[1]: im.shape[1],:] = ulogo
-    cv2.imwrite('media/initial_config.png', im)
+    logo = Image.open("media/logo.png")
+    figure = Image.open("media/initial_config.png")
+    figure.paste(logo, (5, 5), mask = logo)
+    figure.save('media/initial_config.png')

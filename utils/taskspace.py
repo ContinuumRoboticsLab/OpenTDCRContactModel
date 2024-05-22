@@ -2,6 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from utils.obstacle_definition import SuperEllipse
 from utils import mod_cr
+from utils.node_definition import Node
+import queue
+import numpy as np
 
 def add_list(list1,list2):
     return list(np.round(np.array(list1)+np.array(list2),4))
@@ -94,3 +97,68 @@ class TaskSpaceSuperEllipse(TaskSpace):
         ab_2d = ab_np[:,:2]
         self.ab = np.stack([ab_2d[:,0], np.ones(ab_2d.shape[0]), ab_2d[:,1], np.ones(ab_2d.shape[0])])
         self.s = ab_np[:,2]
+
+
+    def next_path_heuristic(self, neigh_nodes, target):
+        """
+        Change this function if you want to try out different heuristics for search.
+        This function just takes in a list of next possible paths(nodes) to travel too
+        and choose the next one for the robot to go too. Currently it just choose the 
+        next node that is closest to the target.
+        """
+        if target is not np.array:
+            target = np.array(target)
+        positions = [np.round(i.ee, 5) for i in neigh_nodes]
+        hypotenuses = [target - n for n in positions]
+        distances = [np.sqrt(np.sum(np.square(n))) for n in hypotenuses]
+        return distances.index(min(distances))
+            
+
+
+    def generate_path(self, start_node: Node, target=[0, 0, 0], target_radius=0.001, max_iter=1000, filename="samplepath.csv"):
+        
+        def check_position_tolerance(heuristic, epsilon):
+            return (heuristic < epsilon)
+        
+        
+        path_q = queue.Queue()
+        i = 0
+        curr_node = start_node
+        path_q.put((curr_node.l, curr_node.l_tendon))
+        
+        # Delta length to change each iteration
+        del_length = 0.0009
+       
+        while (i <= max_iter):
+            curr_node.run_forward_model(self, True, "KINEMATIC_CPP")
+            
+            if check_position_tolerance(np.linalg.norm(curr_node.ee-target), target_radius):
+                print(f"Goal found at {target}")
+                break
+            
+            
+            neigh_traverse = [(del_length, 0), (-del_length, 0), (0, del_length), (0, -del_length), (del_length, del_length)]
+            neighbour_list = [Node(curr_node.robotobj, curr_node.l +i[0], curr_node.l_tendon + i[1] ) for i in neigh_traverse]
+            
+            for neigh in neighbour_list:
+                neigh.set_init_guess(curr_node.var[0,::3])
+                exitflag = neigh.run_forward_model(self, True, "KINEMATIC_CPP")
+                if exitflag:
+                    pass
+                else:
+                    print(neigh.l, neigh.l_tendon, "Model computation failed")
+           # import pdb; pdb.set_trace()
+            next_node = neighbour_list[self.next_path_heuristic(neighbour_list, target)]
+            path_q.put((next_node.l, next_node.l_tendon))
+            curr_node = next_node
+            print(f"Iteration {i}, position: {curr_node.ee}", (next_node.l, next_node.l_tendon))
+            i += 1
+
+    
+        with open(filename, "w+") as f:
+            while not path_q.empty():
+                values = path_q.get()
+                data = f"{round(values[0], 3)}, {round(values[1], 3)}\n"
+                f.write(data)
+        print(f'Written path too: {filename}')
+        

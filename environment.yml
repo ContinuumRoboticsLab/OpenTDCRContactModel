@@ -13,7 +13,8 @@ dependencies:
     - pybind11
     - celluloid
     - pandas
-    - opencv-python
+    - pillow
+    - moviepy 
   - xtl
   - xtensor
   - xtensor-blas

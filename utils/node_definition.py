@@ -18,6 +18,7 @@ class Node:
         if l <= 0: raise Exception("Actuation space length must be greater than 0")
         if actuation <=0: raise Exception("Actuation space Tendon length must be greater than 0")
         
+        self.robotobj = robot
         self.__dict__.update(robot.__dict__)
         self.var = np.zeros((1,3*self.nd))
         self.l = round(l, 4)
@@ -28,7 +29,7 @@ class Node:
         
 
     def set_init_guess(self, x_init):
-        # Sets the initial guess for th e robot's configuration
+        # Sets the initial guess for the robot's configuration
         self.x_init = mod_cr.matlab_convertor(x_init)
         self.x_init_python = x_init
         
@@ -99,7 +100,7 @@ class Node:
         else:
             w_reduced = taskspace
         
-
+        #import pdb;pdb.set_trace()
         xSol, _, exitflag = self.model_dict[model_type].run_model(self, w_reduced)
         self.exitflag = exitflag
         # extiflag returns True for a successful convergence of the solver
