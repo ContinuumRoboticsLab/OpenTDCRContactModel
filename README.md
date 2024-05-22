@@ -132,3 +132,9 @@ If you found the provided implementation of the TDCR contact model helpful or us
   number={5},
   pages={4687-4694},
 }
+## Contributors
+
+Thank you to all the people who have contributed to this project:
+- [@priyankarao257](https://github.com/priyankarao257)
+- [@FlipperCoin](https://github.com/FlipperCoin)
+- [@Nicholas-Baldassini](https://github.com/Nicholas-Baldassini)

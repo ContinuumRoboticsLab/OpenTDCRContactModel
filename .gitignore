@@ -3,5 +3,4 @@ utils_model/__pycache__
 envs/*
 !/envs/.gitkeep
 media/*
-!media/crlLogo.png
-!media/uoftLogo.png
+!media/logo.png
