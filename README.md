@@ -61,7 +61,11 @@ If the model converges, `exitflag` is returned as `True`. The solved curvature v
 The forward model can be called by `node.run_forward_model(taskspace, bool_flag, "$model_type$")`, where `$model_type$` can either be KINEMATIC_CPP or KINEMATIC_MATLAB. The `bool_flag` is an added functionality that considers a reduced taskspace, where only the obstacles close to the guess provided to the model. 
 
 ### Running a sample trajectory
-Some sample paths are provided in `/sample_paths`. Each .csv file contains a list of `mx2` values, with each row containing [l_segment, l_tendon] that the robot is actuated with. By setting the initial guess of the model to be the previous rows solution, the resulting robot shape for each row can be simulated and plotted. There is added functionality to generate the resulting motion in an .mp4 file. 
+To create a custom pathing for your robot, run
+```
+ workspace.generate_path(config_init, target=[x, y, z], filename='filename')
+```
+on your workspace object. This will save a csv file which you can then load in later on for your robot to follow. An example is provided in example.py. Some sample paths are provided in `/sample_paths`. Each .csv file contains a list of `mx2` values, with each row containing [l_segment, l_tendon] that the robot is actuated with. By setting the initial guess of the model to be the previous rows solution, the resulting robot shape for each row can be simulated and plotted. There is added functionality to generate the resulting motion in an .mp4 file. 
 
 ## Installation instructions
 
