@@ -1,6 +1,8 @@
 import numpy as np
 from utils import mod_cr, helpers
 from utils.node_definition import Node
+from utils.obstacle_definition import Circle
+from utils.taskspace import TaskspaceCircle
 import matplotlib.pyplot as plt
 import sys
 
@@ -19,7 +21,7 @@ def load_and_extract(filename):
 
 
 def main():
-    w_name = 'workspaces/workspace_3CPP'
+    w_name = 'workspaces/basicWorkspace'
     print("Workspace name: ",w_name)
     
     workspace = helpers.load_object(w_name)
@@ -35,14 +37,14 @@ def main():
     helpers.saveFigure()
     
     # Generate path file
-    # workspace.generate_path(config_init, target=[-0.020, 0, 0.1], filename='sample_paths/topright.csv')
+    workspace.generate_path(config_init, target=[0.063, 0, 0.09], filename='sample_paths/topright.csv')
     
  
     #generating motion plan based on a provided sample path
     print("Computing path")
     prev_guess = config_init.var[0,::3]
-    sample_path = load_and_extract('sample_paths/3_sample_path.csv')
-    #sample_path = load_and_extract('sample_paths/topright.csv')
+    #sample_path = load_and_extract('sample_paths/3_sample_path.csv')
+    sample_path = load_and_extract('sample_paths/topright.csv')
     traced_path = [config_init]*len(sample_path)
     for idx, iter in enumerate(sample_path):
         curr_node = Node(robot1, iter[0], iter[1])

@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from utils.obstacle_definition import SuperEllipse
+from utils.obstacle_definition import Circle
 from utils import mod_cr
 from utils.node_definition import Node
 import queue
@@ -56,7 +56,7 @@ class TaskSpace:
     def matlab_conversion(self):
         raise NotImplementedError
 
-class TaskSpaceSuperEllipse(TaskSpace):
+class TaskspaceCircle(TaskSpace):
     def __init__(self):
         super().__init__()
         self.obstacle = []
@@ -66,7 +66,7 @@ class TaskSpaceSuperEllipse(TaskSpace):
         self.ob_centerM = [] 
         
 
-    def set_obstacles(self, ellipse : SuperEllipse, num_copies, delta):
+    def set_obstacles(self, ellipse : Circle, num_copies, delta):
         """
         Sets up obstacles in the task space.
 
@@ -82,7 +82,7 @@ class TaskSpaceSuperEllipse(TaskSpace):
         None
         """
         for i in range(num_copies):
-            self.obstacle += [SuperEllipse(ellipse.ab, add_list(ellipse.p,[0,0,i*delta]))]
+            self.obstacle += [Circle(ellipse.ab[0], add_list(ellipse.p,[0,0,i*delta]))]
             self.ob_center += [self.obstacle[-1].p]
             self.ob_ab += [self.obstacle[-1].ab]
 
@@ -115,7 +115,7 @@ class TaskSpaceSuperEllipse(TaskSpace):
             
 
 
-    def generate_path(self, start_node: Node, target=[0, 0, 0], target_radius=0.001, max_iter=1000, filename="samplepath.csv"):
+    def generate_path(self, start_node: Node, target=[0, 0, 0], target_radius=0.01, max_iter=1500, filename="samplepath.csv"):
         
         def check_position_tolerance(heuristic, epsilon):
             return (heuristic < epsilon)

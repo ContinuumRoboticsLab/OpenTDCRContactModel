@@ -29,9 +29,13 @@ class Obstacle:
         plt.ylabel('y (m)')
     
 
-class SuperEllipse(Obstacle):
-    def __init__(self, ab, obcenter):
-        self.ab = ab
+class Circle(Obstacle):
+    def __init__(self, radius, obcenter):
+        #import pdb; pdb.set_trace()
+        if type(radius) == tuple:
+            self.ab = radius
+        else:
+            self.ab = (radius, radius, 2)
         self.p = obcenter
 
     def xy_gen(self):

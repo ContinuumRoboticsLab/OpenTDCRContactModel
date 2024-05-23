@@ -23,26 +23,22 @@ https://colab.research.google.com/drive/12blCye60rOwlRdw1ya80a9P254LK0z9w?usp=sh
 The 2D plane in which the robot operates is the xz plane. 
 The current implementation supports circular obstacles. Non-convex and more complex obstacles can be created by superimposing multiple circular obstacles. 
 
-Each obstacle can be defined by creating an object of the class `SuperEllipse([radius, radius, 2], [x, y,z])`. An object of `Taskspace` class contains multiple such obstacles and can be set by calling `takspace.set_obstacles(circle1, n, z_delta)`, where the function adds `n` number of copies of the input obstacle, offset along the z-direction. 
+Each obstacle can be defined by creating an object of the class `Circle(radius, [x, y,z])`. An object of `Taskspace` class contains multiple such obstacles and can be set by calling `takspace.set_obstacles(circle1, n, z_delta)`, where the function adds `n` number of copies of the input obstacle, offset along the z-direction. 
 
 To create your own taskspace, define a taskspace object and simply add obstacles to it.
 ```
-from utils.taskspace import TaskSpace, TaskSpaceSuperEllipse
-from utils.obstacle_definition import Obstacle, SuperEllipse
+from utils.taskspace import TaskSpace, TaskSpaceCircle
+from utils.obstacle_definition import Obstacle, Circle
 
-task = TaskSpaceSuperEllipse()
-obstacle_1 = SuperEllipse((0.002, 0.0102, 4), (0.16, 0.0, 0.03))
-obstacle_2 = SuperEllipse((0.01, 0.0432, 2), (0.06, 0.0, 0.03))
-obstacle_3 = SuperEllipse((0.01, 0.0132, 2), (0.0, 0.0, 0.03))
+task = TaskspaceCircle()
+obstacle_1 = Circle(0.005, (0.16, 0.0, 0.03))
+obstacle_2 = Circle(0.005, (0.06, 0.0, 0.03))
+obstacle_3 = Circle(0.005, (0.0, 0.0, 0.03))
 task.set_obstacles(obstacle_1, 1, 1)
 task.set_obstacles(obstacle_2, 1, 1)
 task.set_obstacles(obstacle_3, 1, 1)    
 ```
 Or you can use the workspace included in ```/workspaces``` with ```workspace = helpers.load_object(workspace_name)```.
-To help with defining more complex ellipses, run ```python ./utils/visualizeEllipse.py``` to visualize different values of the major and minor axis. You can directly input the values on screen into your ```SuperEllipse``` object constructor.
-
-
-
 
 ### Details about the robot
 The robot can be defined by creating an object of the class `Robot(radius, number_of_disks)` defined in `utils/mod_cr`, woith radius in m and the input number of disks. Since the model uses a piece-wise constant curvature arc representation, the number of disks is used to simply discretize the backbone into that many subsegments.  
