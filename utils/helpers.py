@@ -28,7 +28,7 @@ def visualizing(traced_path, workspace, filename, show_video=False):
     camera = Camera(fig)
     skip_step = 2 if len(traced_path) > 100 else 1
 
-    for i, curr_node in enumerate(traced_path[::-1]):#[::-1]:
+    for i, curr_node in enumerate(traced_path):#[::-1]:
         if (i % skip_step == 0 ):
             if i ==0:
                 curr_node.plot_configuration(workspace)

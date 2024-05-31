@@ -50,6 +50,9 @@ class TaskSpace:
                 plt.arrow(self.target[0], self.target[2], 0.02*np.cos(self.target_orientation), 0.02*np.sin(self.target_orientation), color = 'firebrick', head_width = 0.004, alpha = 0.7 )
         mod_cr.plotSettings()
         plt.gca().set_aspect('equal', adjustable='box')
+        plt.plot(self.target[0], self.target[2], "ro")
+            
+
     def set_obstacles(self):
         raise NotImplementedError("Subclasses must implement this method")
 
@@ -115,8 +118,9 @@ class TaskspaceCircle(TaskSpace):
             
 
 
-    def generate_path(self, start_node: Node, target=[0, 0, 0], target_radius=0.01, max_iter=1500, filename="samplepath.csv"):
+    def generate_path(self, start_node: Node, target=[0, 0, 0], target_radius=0.004, max_iter=1500, filename="samplepath.csv"):
         
+        self.target = target
         def check_position_tolerance(heuristic, epsilon):
             return (heuristic < epsilon)
         

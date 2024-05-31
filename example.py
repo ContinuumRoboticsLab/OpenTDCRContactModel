@@ -20,12 +20,11 @@ def load_and_extract(filename):
     return df.to_numpy()
 
 
-def main():
-    w_name = 'workspaces/basicWorkspace'
-    print("Workspace name: ",w_name)
-    
-    workspace = helpers.load_object(w_name)
+def main():    
+    workspace = helpers.load_object("workspaces/basicWorkspace")
     robot1 = mod_cr.Robot(6e-3, 30) #setting dimensions of the robot
+
+
 
     # calculating initial configuration
     config_init = Node(robot1, 0.001, 0.001)
@@ -33,11 +32,15 @@ def main():
     config_init.T = np.eye(4)
 
     config_init.run_forward_model(workspace, True, "KINEMATIC_CPP")
+    workspace.generate_path(config_init, target=[0.064, 0, 0.088], filename='sample_paths/topright.csv')
+
     config_init.plot_configuration(workspace)
     helpers.saveFigure()
+    #workspace.plot_workspace()
+    #sys.exit()
     
     # Generate path file
-    workspace.generate_path(config_init, target=[0.063, 0, 0.09], filename='sample_paths/topright.csv')
+    #workspace.generate_path(config_init, target=[0.06, 0, 0.09], filename='sample_paths/topright.csv')
     
  
     #generating motion plan based on a provided sample path
@@ -57,7 +60,7 @@ def main():
             print("model did not converge - investigate initial guess / input actuations, at index = ", iter)
             break
     print("Saving video")
-    helpers.visualizing(traced_path[::-1], workspace, "media/sample", show_video=True)
+    helpers.visualizing(traced_path, workspace, "media/sample", show_video=True)
 
 
 if __name__ == "__main__":
