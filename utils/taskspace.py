@@ -3,8 +3,10 @@ import matplotlib.pyplot as plt
 from utils.obstacle_definition import Circle
 from utils import mod_cr
 from utils.node_definition import Node
-import queue
+#import queue
+from utils.helpers import PriorityNodeQueue
 import numpy as np
+import os
 
 def add_list(list1,list2):
     return list(np.round(np.array(list1)+np.array(list2),4))
@@ -102,48 +104,63 @@ class TaskspaceCircle(TaskSpace):
         self.s = ab_np[:,2]
 
 
-    def next_path_heuristic(self, neigh_nodes, target):
+    def distance_to_target(self, node, target):
+        position = np.round(node.ee, 5)
+        hypotenuse = target - position
+        distance = np.round(np.sqrt(np.sum(np.square(hypotenuse))), 5)
+        return distance
+        
+        
+    def next_path_heuristic(self, node, target):
         """
         Change this function if you want to try out different heuristics for search.
         This function just takes in a list of next possible paths(nodes) to travel too
         and choose the next one for the robot to go too. Currently it just choose the 
         next node that is closest to the target.
         """
-        if target is not np.array:
-            target = np.array(target)
-        positions = [np.round(i.ee, 5) for i in neigh_nodes]
-        hypotenuses = [target - n for n in positions]
-        distances = [np.sqrt(np.sum(np.square(n))) for n in hypotenuses]
-        return distances.index(min(distances))
+        return self.distance_to_target(node, target)
             
 
-
-    def generate_path(self, start_node: Node, target=[0, 0, 0], target_radius=0.004, max_iter=1500, filename="samplepath.csv"):
+    def generate_path(self, start_node: Node, target=[0, 0, 0], target_radius=0.003, max_iter=1500, filename="samplepath.csv"):
         
+        # Which neighbours to consider
+        del_length = 0.001
+        neigh_traverse = [(del_length, 0), (-del_length, 0), (0, del_length), (0, -del_length), (del_length, del_length)]
+        
+        # Basic variables
         self.target = target
-        def check_position_tolerance(heuristic, epsilon):
-            return (heuristic < epsilon)
-        
-        
-        path_q = queue.Queue()
-        i = 0
-        curr_node = start_node
-        path_q.put((curr_node.l, curr_node.l_tendon))
-        
-        # Delta length to change each iteration
-        del_length = 0.0009
-       
-        while (i <= max_iter):
-            curr_node.run_forward_model(self, True, "KINEMATIC_CPP")
+        next = PriorityNodeQueue()
+        next.put((self.next_path_heuristic(start_node, target), start_node))
+        parents = {start_node: None}
+        node_on_target = None
+
+        counter = 0
+        # Main search loop
+        while not next.isEmpty():
+            priority, curr_node = next.get()
+            distance = priority
+            print(f"{counter} - Current node heuristic (distance): {priority}, distance: {np.round(curr_node.ee, 5)}")
             
-            if check_position_tolerance(np.linalg.norm(curr_node.ee-target), target_radius):
+            # Break condition, if tip reached target
+            if distance <= target_radius:
                 print(f"Goal found at {target}")
+                node_on_target = curr_node
                 break
             
+            # Max iterations break
+            if counter >= max_iter:
+                print(f"Goal has not been found in {max_iter}, quitting")
+                return None
             
-            neigh_traverse = [(del_length, 0), (-del_length, 0), (0, del_length), (0, -del_length), (del_length, del_length)]
-            neighbour_list = [Node(curr_node.robotobj, curr_node.l +i[0], curr_node.l_tendon + i[1] ) for i in neigh_traverse]
+            # Generate list of neighbours to consider
+            neighbour_list = []
+            for j in neigh_traverse:
+                length = curr_node.l + j[0]
+                tendon = curr_node.l_tendon + j[1]
+                if length > 0 and tendon > 0:
+                    neighbour_list.append(Node(curr_node.robotobj, length, tendon))
             
+            # Find add neighbours to queue, calculate their Foward kinematics
             for neigh in neighbour_list:
                 neigh.set_init_guess(curr_node.var[0,::3])
                 exitflag = neigh.run_forward_model(self, True, "KINEMATIC_CPP")
@@ -151,18 +168,34 @@ class TaskspaceCircle(TaskSpace):
                     pass
                 else:
                     print(neigh.l, neigh.l_tendon, "Model computation failed")
-           # import pdb; pdb.set_trace()
-            next_node = neighbour_list[self.next_path_heuristic(neighbour_list, target)]
-            path_q.put((next_node.l, next_node.l_tendon))
-            curr_node = next_node
-            print(f"Iteration {i}, position: {curr_node.ee}", (next_node.l, next_node.l_tendon))
-            i += 1
-
-    
-        with open(filename, "w+") as f:
-            while not path_q.empty():
-                values = path_q.get()
+                
+                if neigh not in parents:
+                    priority = self.next_path_heuristic(neigh, target)
+                    # import pdb; pdb.set_trace()
+                    next.put((priority, neigh))
+                    parents[neigh] = curr_node
+            counter += 1
+        
+        # Write joint space path to file
+        tmp_filename = f"{filename}tmp"
+        with open(tmp_filename, "w+") as f:
+            while True:
+                values = node_on_target.l, node_on_target.l_tendon
                 data = f"{round(values[0], 3)}, {round(values[1], 3)}\n"
                 f.write(data)
+                node_on_target = parents[node_on_target]
+                
+                if node_on_target is None:
+                    break
+        
+        # Reverse file order, since we wrote it from last node to first
+        with open(tmp_filename, "r") as f:
+            with open(filename, "w+") as f2:
+                lines = reversed(f.readlines())
+                for l in lines:
+                    f2.write(l)
         print(f'Written path too: {filename}')
+        os.remove(tmp_filename)
+
+    
         

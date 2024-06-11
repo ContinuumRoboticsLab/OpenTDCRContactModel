@@ -100,7 +100,6 @@ class Node:
         else:
             w_reduced = taskspace
         
-        #import pdb;pdb.set_trace()
         xSol, _, exitflag = self.model_dict[model_type].run_model(self, w_reduced)
         self.exitflag = exitflag
         # extiflag returns True for a successful convergence of the solver

@@ -57,7 +57,7 @@ If the model converges, `exitflag` is returned as `True`. The solved curvature v
 The forward model can be called by `node.run_forward_model(taskspace, bool_flag, "$model_type$")`, where `$model_type$` can either be KINEMATIC_CPP or KINEMATIC_MATLAB. The `bool_flag` is an added functionality that considers a reduced taskspace, where only the obstacles close to the guess provided to the model. 
 
 ### Running a sample trajectory
-To create a custom pathing for your robot, run
+To create a custom planner for your robot, run
 ```
  workspace.generate_path(config_init, target=[x, y, z], filename='filename')
 ```
@@ -87,7 +87,7 @@ If you would like to use MATLAB instead of our CPP optimizers, please run ```pip
 sudo apt update
 ```
 ```
-sudo apt install cmake libopenblas-dev build-essential libnlopt-dev
+sudo apt install cmake libopenblas-dev build-essential libnlopt-dev ffmpeg
 ```
 
 nlopt must be built from source

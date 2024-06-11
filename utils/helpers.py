@@ -23,8 +23,7 @@ def visualizing(traced_path, workspace, filename, show_video=False):
     """
     Visualizes the final traced path
     """
-    fig = plt.figure(dpi=150)
-    size = tuple(fig.get_size_inches()*fig.dpi)
+    fig = plt.figure(dpi=300)
     camera = Camera(fig)
     skip_step = 2 if len(traced_path) > 100 else 1
 
@@ -34,13 +33,11 @@ def visualizing(traced_path, workspace, filename, show_video=False):
                 curr_node.plot_configuration(workspace)
             else:
                 curr_node.plot_configuration(workspace, 'slateblue', False)
-            # text(0.005, 0.01, "Node : "+str(i), fontsize=12)
             camera.snap()
 
 
     for i in range(0,50):
         traced_path[0].plot_configuration(workspace)
-        # text(0.005, 0.01, "Node : "+str(len(traced_path)), fontsize=12)
         camera.snap()
     if show_video:
         plt.show()
@@ -58,10 +55,44 @@ def visualizing(traced_path, workspace, filename, show_video=False):
     video_with_watermark.write_videofile("media/pathing.mp4", codec="libx264")
     os.remove(filename + '.mp4')
 
-def saveFigure():
+def saveFigure(filename):
 
-    plt.savefig('media/initial_config.png')
+    plt.savefig(f'media/{filename}')
     logo = Image.open("media/logo.png")
-    figure = Image.open("media/initial_config.png")
+    figure = Image.open(f"media/{filename}")
     figure.paste(logo, (5, 5), mask = logo)
-    figure.save('media/initial_config.png')
+    figure.save(f'media/{filename}')
+
+
+class PriorityNodeQueue(object):
+    def __init__(self):
+        
+        self.queue = []
+ 
+    def __str__(self):
+        return ' '.join([str(i) for i in self.queue])
+ 
+    # for checking if the queue is empty
+    def isEmpty(self):
+        return len(self.queue) == 0
+ 
+    # for inserting an element in the queue
+    def put(self, data):
+        # data = (priority, node)
+        self.queue.append(data)
+ 
+    # for popping an element based on Priority
+    # note this queue considers highest priority to be the smallest element
+    def get(self):
+        # data = (priority, node)
+        try:
+            max_val = 0
+            for i in range(len(self.queue)):
+                if self.queue[i][0] < self.queue[max_val][0]:
+                    max_val = i
+            item = self.queue[max_val]
+            del self.queue[max_val]
+            return item
+        except IndexError:
+            print()
+            exit()
