@@ -62,37 +62,3 @@ def saveFigure(filename):
     figure = Image.open(f"media/{filename}")
     figure.paste(logo, (5, 5), mask = logo)
     figure.save(f'media/{filename}')
-
-
-class PriorityNodeQueue(object):
-    def __init__(self):
-        
-        self.queue = []
- 
-    def __str__(self):
-        return ' '.join([str(i) for i in self.queue])
- 
-    # for checking if the queue is empty
-    def isEmpty(self):
-        return len(self.queue) == 0
- 
-    # for inserting an element in the queue
-    def put(self, data):
-        # data = (priority, node)
-        self.queue.append(data)
- 
-    # for popping an element based on Priority
-    # note this queue considers highest priority to be the smallest element
-    def get(self):
-        # data = (priority, node)
-        try:
-            max_val = 0
-            for i in range(len(self.queue)):
-                if self.queue[i][0] < self.queue[max_val][0]:
-                    max_val = i
-            item = self.queue[max_val]
-            del self.queue[max_val]
-            return item
-        except IndexError:
-            print()
-            exit()

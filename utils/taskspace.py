@@ -3,10 +3,22 @@ import matplotlib.pyplot as plt
 from utils.obstacle_definition import Circle
 from utils import mod_cr
 from utils.node_definition import Node
-#import queue
-from utils.helpers import PriorityNodeQueue
+import queue
+#from utils.helpers import PriorityNodeQueue
 import numpy as np
 import os
+
+from dataclasses import dataclass, field
+from typing import Any
+
+@dataclass(order=True)
+class PrioritizedItem:
+    priority: float
+    item: Any=field(compare=False)
+    def __init__(self, n: Node, priority: float):
+        self.priority = priority
+        self.item = n
+
 
 def add_list(list1,list2):
     return list(np.round(np.array(list1)+np.array(list2),4))
@@ -129,15 +141,16 @@ class TaskspaceCircle(TaskSpace):
         
         # Basic variables
         self.target = target
-        next = PriorityNodeQueue()
-        next.put((self.next_path_heuristic(start_node, target), start_node))
+        next = queue.PriorityQueue()
+        next.put(PrioritizedItem(start_node, self.next_path_heuristic(start_node, target)))
         parents = {start_node: None}
         node_on_target = None
 
         counter = 0
         # Main search loop
-        while not next.isEmpty():
-            priority, curr_node = next.get()
+        while not next.empty():
+            item = next.get()
+            curr_node, priority = item.item, item.priority
             distance = priority
             print(f"{counter} - Current node heuristic (distance): {priority}, distance: {np.round(curr_node.ee, 5)}")
             
@@ -171,8 +184,7 @@ class TaskspaceCircle(TaskSpace):
                 
                 if neigh not in parents:
                     priority = self.next_path_heuristic(neigh, target)
-                    # import pdb; pdb.set_trace()
-                    next.put((priority, neigh))
+                    next.put(PrioritizedItem(neigh, priority))
                     parents[neigh] = curr_node
             counter += 1
         

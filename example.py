@@ -30,7 +30,7 @@ def main():
     config_init.run_forward_model(workspace, True, "KINEMATIC_CPP")
     
     # Generate path file
-    workspace.generate_path(config_init, target=[0.07, 0, 0.13], filename='sample_paths/new.csv')
+    workspace.generate_path(config_init, target=[0.09, 0, 0.04], filename='sample_paths/new.csv')
 
     # Save initial configuration figure
     config_init.plot_configuration(workspace)
