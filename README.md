@@ -23,9 +23,22 @@ https://colab.research.google.com/drive/12blCye60rOwlRdw1ya80a9P254LK0z9w?usp=sh
 The 2D plane in which the robot operates is the xz plane. 
 The current implementation supports circular obstacles. Non-convex and more complex obstacles can be created by superimposing multiple circular obstacles. 
 
-Each obstacle can be defined by creating an object of the class `SuperEllipse([radius, radius, 2], [x, y,z])`. An object of `Taskspace` class contains multiple such obstacles and can be set by calling `takspace.set_obstacles(circle1, n, z_delta)`, where the function adds `n` number of copies of the input obstacle, offset along the z-direction. 
+Each obstacle can be defined by creating an object of the class `Circle(radius, [x, y,z])`. An object of `Taskspace` class contains multiple such obstacles and can be set by calling `takspace.set_obstacles(circle1, n, z_delta)`, where the function adds `n` number of copies of the input obstacle, offset along the z-direction. 
 
+To create your own taskspace, define a taskspace object and simply add obstacles to it.
+```
+from utils.taskspace import TaskSpace, TaskSpaceCircle
+from utils.obstacle_definition import Obstacle, Circle
 
+task = TaskspaceCircle()
+obstacle_1 = Circle(0.005, (0.16, 0.0, 0.03))
+obstacle_2 = Circle(0.005, (0.06, 0.0, 0.03))
+obstacle_3 = Circle(0.005, (0.0, 0.0, 0.03))
+task.set_obstacles(obstacle_1, 1, 1)
+task.set_obstacles(obstacle_2, 1, 1)
+task.set_obstacles(obstacle_3, 1, 1)    
+```
+Or you can use the workspace included in ```/workspaces``` with ```workspace = helpers.load_object(workspace_name)```.
 
 ### Details about the robot
 The robot can be defined by creating an object of the class `Robot(radius, number_of_disks)` defined in `utils/mod_cr`, woith radius in m and the input number of disks. Since the model uses a piece-wise constant curvature arc representation, the number of disks is used to simply discretize the backbone into that many subsegments.  
@@ -44,7 +57,11 @@ If the model converges, `exitflag` is returned as `True`. The solved curvature v
 The forward model can be called by `node.run_forward_model(taskspace, bool_flag, "$model_type$")`, where `$model_type$` can either be KINEMATIC_CPP or KINEMATIC_MATLAB. The `bool_flag` is an added functionality that considers a reduced taskspace, where only the obstacles close to the guess provided to the model. 
 
 ### Running a sample trajectory
-Some sample paths are provided in `/sample_paths`. Each .csv file contains a list of `mx2` values, with each row containing [l_segment, l_tendon] that the robot is actuated with. By setting the initial guess of the model to be the previous rows solution, the resulting robot shape for each row can be simulated and plotted. There is added functionality to generate the resulting motion in an .mp4 file. 
+To create a custom planner for your robot, run
+```
+ workspace.generate_path(config_init, target=[x, y, z], filename='filename')
+```
+on your workspace object. This will save a csv file which you can then load in later on for your robot to follow. An example is provided in example.py. Some sample paths are provided in `/sample_paths`. Each .csv file contains a list of `mx2` values, with each row containing [l_segment, l_tendon] that the robot is actuated with. By setting the initial guess of the model to be the previous rows solution, the resulting robot shape for each row can be simulated and plotted. There is added functionality to generate the resulting motion in an .mp4 file. 
 
 ## Installation instructions
 
@@ -70,7 +87,7 @@ If you would like to use MATLAB instead of our CPP optimizers, please run ```pip
 sudo apt update
 ```
 ```
-sudo apt install cmake libopenblas-dev build-essential libnlopt-dev
+sudo apt install cmake libopenblas-dev build-essential libnlopt-dev ffmpeg
 ```
 
 nlopt must be built from source
@@ -111,3 +128,9 @@ If you found the provided implementation of the TDCR contact model helpful or us
   number={5},
   pages={4687-4694},
 }
+## Contributors
+
+Thank you to all the people who have contributed to this project:
+- [@priyankarao257](https://github.com/priyankarao257)
+- [@FlipperCoin](https://github.com/FlipperCoin)
+- [@Nicholas-Baldassini](https://github.com/Nicholas-Baldassini)

@@ -2,3 +2,5 @@ __pycache__
 utils_model/__pycache__
 envs/*
 !/envs/.gitkeep
+media/*
+!media/logo.png
